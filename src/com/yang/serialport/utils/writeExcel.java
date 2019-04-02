@@ -11,11 +11,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class writeExcel{
-    public static int[] getRowNumAndColumnNum(String location){
 
-
-
-    }
 
     public static void setExcel(String pathName,int rowNum,int columnNum,String content) throws IOException {
         FileInputStream fs=new FileInputStream(pathName);  //获取d://test.xls

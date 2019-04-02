@@ -6,6 +6,7 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import javax.swing.*;
@@ -14,10 +15,8 @@ import javax.swing.event.PopupMenuListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.yang.serialport.manager.SerialPortManager;
-import com.yang.serialport.utils.ByteUtils;
-import com.yang.serialport.utils.ShowUtils;
+import com.yang.serialport.utils.*;
 
-import com.yang.serialport.utils.scanGun;
 import gnu.io.PortInUseException;
 import gnu.io.SerialPort;
 
@@ -33,15 +32,18 @@ public class MainFrame extends JFrame {
 	// 程序界面宽度
 	public final int WIDTH = 530;
 	// 程序界面高度
-	public final int HEIGHT = 520;
+	public final int HEIGHT = 570;
 
 	// 数据显示区
 	private JTextArea mDataView = new JTextArea();
 	private JScrollPane mScrollDataView = new JScrollPane(mDataView);
 
 	private JTextField pathField = new JTextField();
-	private JTextField numberLocation = new JTextField();
-	private JTextField resultLocation = new JTextField();
+	private JTextField numberLocationRow = new JTextField();
+	private JTextField numberLocationColumn = new JTextField();
+	private JTextField resultLocationRow = new JTextField();
+	private JTextField resultLocationColumn = new JTextField();
+	private JTextField scanGunField = new JTextField();
 
 	// 串口设置面板
 	private JPanel mSerialPortPanel = new JPanel();
@@ -63,8 +65,9 @@ public class MainFrame extends JFrame {
 	//文本上传面板，添加指定位置如A7
 	private JPanel filepanel  = new JPanel();
 	private JLabel fileLabel = new JLabel("excel文件路径");
-	private JLabel numberLocationLabel = new JLabel("序列号填入位置");
-	private JLabel resultLocationLabel = new JLabel("检测结果填入位置");
+	private JLabel numberLocationLabel = new JLabel("序列号填入位置 行 列 填写数字");
+	private JLabel resultLocationLabel = new JLabel("检测结果填入位置 行 列 填写数字");
+	private JLabel scanGunLabel = new JLabel("扫码枪输入数据");
 	private JButton btn1 = new JButton("浏览");
 	private JButton btn2 = new JButton("确定");
 
@@ -112,7 +115,7 @@ public class MainFrame extends JFrame {
 
 		// 串口设置
 		mSerialPortPanel.setBorder(BorderFactory.createTitledBorder("串口设置"));
-		mSerialPortPanel.setBounds(10, 350, 170, 130);//220
+		mSerialPortPanel.setBounds(10, 400, 170, 130);//220
 		mSerialPortPanel.setLayout(null);
 		add(mSerialPortPanel);
 
@@ -141,7 +144,7 @@ public class MainFrame extends JFrame {
 
 		//文本上传设置
 		filepanel.setBorder(BorderFactory.createTitledBorder("文件上传设置"));
-		filepanel.setBounds(10, 220, 505, 130);//220
+		filepanel.setBounds(10, 220, 505, 175);//220
 		filepanel.setLayout(null);
 		add(filepanel);
 		btn1.setBounds(300, 40, 60, 25);
@@ -161,17 +164,32 @@ public class MainFrame extends JFrame {
 		resultLocationLabel.setBounds(10,90,505,30);
 		filepanel.add(resultLocationLabel);
 
+		scanGunLabel.setBounds(10,120,505,30);
+		filepanel.add(scanGunLabel);
+
 		pathField.setBounds(20, 40, 265, 20);
 		pathField.setVisible(true);
 		filepanel.add(pathField);
 
-		numberLocation.setBounds(110, 70, 50, 20);
-		numberLocation.setVisible(true);
-		filepanel.add(numberLocation);
+		scanGunField.setBounds(20,145,265,20);
+		scanGunField.setVisible(true);
+		filepanel.add(scanGunField);
 
-		resultLocation.setBounds(130, 100, 50, 20);
-		resultLocation.setVisible(true);
-		filepanel.add(resultLocation);
+
+
+		numberLocationRow.setBounds(200, 70, 50, 20);
+		numberLocationRow.setVisible(true);
+		filepanel.add(numberLocationRow);
+		numberLocationColumn.setBounds(260, 70, 50, 20);
+		numberLocationColumn.setVisible(true);
+		filepanel.add(numberLocationColumn);
+
+		resultLocationRow.setBounds(200, 100, 50, 20);
+		resultLocationRow.setVisible(true);
+		filepanel.add(resultLocationRow);
+		resultLocationColumn.setBounds(260, 100, 50, 20);
+		resultLocationColumn.setVisible(true);
+		filepanel.add(resultLocationColumn);
 
 
 
@@ -179,7 +197,7 @@ public class MainFrame extends JFrame {
 
 		// 操作
 		mOperatePanel.setBorder(BorderFactory.createTitledBorder("操作"));
-		mOperatePanel.setBounds(200, 350, 315, 130);
+		mOperatePanel.setBounds(200, 400, 315, 130);
 		mOperatePanel.setLayout(null);
 		add(mOperatePanel);
 
@@ -290,7 +308,73 @@ public class MainFrame extends JFrame {
 		btn2.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
-				System.out.println(path);
+				textFileIO.writePathToText(path);
+			}
+		});
+
+		numberLocationRow.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				String numberlocation;
+
+					numberlocation = numberLocationRow.getText();
+					textFileIO.writeNumLocationRowToText(numberlocation);
+
+
+			}
+		});
+
+		numberLocationColumn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				String numberlocation;
+
+					numberlocation = numberLocationColumn.getText();
+					textFileIO.writeNumLocationColumnToText(numberlocation);
+
+
+			}
+		});
+
+		resultLocationRow.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				String resultlocation;
+
+					resultlocation = resultLocationRow.getText();
+					textFileIO.writeResultLocationRowToText(resultlocation);
+
+
+			}
+		});
+
+		resultLocationColumn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				String resultlocation;
+
+					resultlocation = resultLocationColumn.getText();
+					textFileIO.writeResultLocationColumnToText(resultlocation);
+
+
+			}
+		});
+
+		scanGunField.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				String numberlocation;
+
+				String scanGunContent = scanGunField.getText();
+				int a = textFileIO.readNumRow();
+				int b = textFileIO.readNumColumn();
+				try {
+					writeExcel.setExcel(path,a-1,b-1,scanGunContent);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+
+
 			}
 		});
 
