@@ -21,10 +21,7 @@ public class writeExcel{
 
         FileOutputStream out=new FileOutputStream(pathName);  //向d://test.xls中写数据
         HSSFRow row=sheet.getRow(rowNum); //在现有行号后追加数据
-        row.createCell(columnNum).setCellValue(content); //设置第一个（从0开始）单元格的数据
-
-
-
+        row.getCell(columnNum).setCellValue(content); //设置第一个（从0开始）单元格的数据
         out.flush();
         wb.write(out);
         out.close();

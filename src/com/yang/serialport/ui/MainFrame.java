@@ -444,11 +444,21 @@ public class MainFrame extends JFrame {
 					} else {
 						// 读取串口数据
 						data = SerialPortManager.readFromPort(mSerialport);
+						String resultContent = new String(data);
+						int c = textFileIO.readResultRow();
+						int d = textFileIO.readResultColumn();
+						path = textFileIO.readPath();
+						System.out.println(c);
+						System.out.println(d);
+						System.out.println(resultContent);
+						System.out.println(path);
+						writeExcel.setExcel(path,c-1,d-1,resultContent);
+
 
 						// 以字符串的形式接收数据
 						if (mDataASCIIChoice.isSelected()) {
 							mDataView.append(new String(data) + "\r\n");
-							a = MainFrame.getdata(data);
+
 						}
 
 						// 以十六进制的形式接收数据
@@ -508,10 +518,7 @@ public class MainFrame extends JFrame {
 			SerialPortManager.sendToPort(mSerialport, ByteUtils.hexStr2Byte(data));
 		}
 	}
-	private static String getdata(byte[] data){
-		String stringData = new String(data);
-		return stringData;
-	}
+
 
 
 	public static void main(String args[]) {
