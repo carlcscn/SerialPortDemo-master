@@ -28,17 +28,20 @@ import gnu.io.SerialPort;
 @SuppressWarnings("all")
 public class MainFrame extends JFrame {
 	static String path = null;
+	static String targetPath = null;
+	static String scanGunContent=null;
 
 	// 程序界面宽度
 	public final int WIDTH = 530;
 	// 程序界面高度
-	public final int HEIGHT = 570;
+	public final int HEIGHT = 620;
 
 	// 数据显示区
 	private JTextArea mDataView = new JTextArea();
 	private JScrollPane mScrollDataView = new JScrollPane(mDataView);
 
 	private JTextField pathField = new JTextField();
+	private JTextField targetPathField = new JTextField();
 	private JTextField numberLocationRow = new JTextField();
 	private JTextField numberLocationColumn = new JTextField();
 	private JTextField resultLocationRow = new JTextField();
@@ -65,11 +68,14 @@ public class MainFrame extends JFrame {
 	//文本上传面板，添加指定位置如A7
 	private JPanel filepanel  = new JPanel();
 	private JLabel fileLabel = new JLabel("excel文件路径");
+	private JLabel targetFileLabel = new JLabel("目标文件夹路径");
 	private JLabel numberLocationLabel = new JLabel("序列号填入位置 行 列 填写数字");
 	private JLabel resultLocationLabel = new JLabel("检测结果填入位置 行 列 填写数字");
 	private JLabel scanGunLabel = new JLabel("扫码枪输入数据");
 	private JButton btn1 = new JButton("浏览");
 	private JButton btn2 = new JButton("确定");
+	private JButton btn3 = new JButton("浏览");
+	private JButton btn4 = new JButton("确定");
 
 
 
@@ -115,7 +121,7 @@ public class MainFrame extends JFrame {
 
 		// 串口设置
 		mSerialPortPanel.setBorder(BorderFactory.createTitledBorder("串口设置"));
-		mSerialPortPanel.setBounds(10, 400, 170, 130);//220
+		mSerialPortPanel.setBounds(10, 450, 170, 130);//220
 		mSerialPortPanel.setLayout(null);
 		add(mSerialPortPanel);
 
@@ -144,7 +150,7 @@ public class MainFrame extends JFrame {
 
 		//文本上传设置
 		filepanel.setBorder(BorderFactory.createTitledBorder("文件上传设置"));
-		filepanel.setBounds(10, 220, 505, 175);//220
+		filepanel.setBounds(10, 220, 505, 225);//220
 		filepanel.setLayout(null);
 		add(filepanel);
 		btn1.setBounds(300, 40, 60, 25);
@@ -153,41 +159,54 @@ public class MainFrame extends JFrame {
 		btn2.setVisible(true);
 		filepanel.add(btn1);
 		filepanel.add(btn2);
+		btn3.setBounds(300, 90, 60, 25);
+		btn4.setBounds(370, 90, 60, 25);
+		btn3.setVisible(true);
+		btn4.setVisible(true);
+		filepanel.add(btn3);
+		filepanel.add(btn4);
 
 
 		fileLabel.setBounds(10,10,505,30);
 		filepanel.add(fileLabel);
 
-		numberLocationLabel.setBounds(10,60,505,30);
+		targetFileLabel.setBounds(10,60,505,30);
+		filepanel.add(targetFileLabel);
+
+		numberLocationLabel.setBounds(10,110,505,30);
 		filepanel.add(numberLocationLabel);
 
-		resultLocationLabel.setBounds(10,90,505,30);
+		resultLocationLabel.setBounds(10,140,505,30);
 		filepanel.add(resultLocationLabel);
 
-		scanGunLabel.setBounds(10,120,505,30);
+		scanGunLabel.setBounds(10,170,505,30);
 		filepanel.add(scanGunLabel);
 
 		pathField.setBounds(20, 40, 265, 20);
 		pathField.setVisible(true);
 		filepanel.add(pathField);
 
-		scanGunField.setBounds(20,145,265,20);
+		targetPathField.setBounds(20,90,265,20);
+		targetPathField.setVisible(true);
+		filepanel.add(targetPathField);
+
+		scanGunField.setBounds(20,195,265,20);
 		scanGunField.setVisible(true);
 		filepanel.add(scanGunField);
 
 
 
-		numberLocationRow.setBounds(200, 70, 50, 20);
+		numberLocationRow.setBounds(200, 120, 50, 20);
 		numberLocationRow.setVisible(true);
 		filepanel.add(numberLocationRow);
-		numberLocationColumn.setBounds(260, 70, 50, 20);
+		numberLocationColumn.setBounds(260, 120, 50, 20);
 		numberLocationColumn.setVisible(true);
 		filepanel.add(numberLocationColumn);
 
-		resultLocationRow.setBounds(200, 100, 50, 20);
+		resultLocationRow.setBounds(200, 150, 50, 20);
 		resultLocationRow.setVisible(true);
 		filepanel.add(resultLocationRow);
-		resultLocationColumn.setBounds(260, 100, 50, 20);
+		resultLocationColumn.setBounds(260, 150, 50, 20);
 		resultLocationColumn.setVisible(true);
 		filepanel.add(resultLocationColumn);
 
@@ -197,7 +216,7 @@ public class MainFrame extends JFrame {
 
 		// 操作
 		mOperatePanel.setBorder(BorderFactory.createTitledBorder("操作"));
-		mOperatePanel.setBounds(200, 400, 315, 130);
+		mOperatePanel.setBounds(200, 450, 315, 130);
 		mOperatePanel.setLayout(null);
 		add(mOperatePanel);
 
@@ -281,7 +300,7 @@ public class MainFrame extends JFrame {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				final JFileChooser chooser = new JFileChooser();
-				FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files", "xls");
+				FileNameExtensionFilter filter = new FileNameExtensionFilter("txt","xls");
 				chooser.setFileFilter(filter);
 				final int returnVal = chooser.showOpenDialog(btn1);
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -309,6 +328,44 @@ public class MainFrame extends JFrame {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				textFileIO.writePathToText(path);
+			}
+		});
+
+		btn3.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				final JFileChooser chooser1 = new JFileChooser();
+				FileNameExtensionFilter filter = new FileNameExtensionFilter("txt","xls");
+				/*chooser1.setFileFilter(filter);*/
+				chooser1.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+				final int returnVal = chooser1.showOpenDialog(btn3);
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+					final File file = chooser1.getSelectedFile();
+					targetPath = file.getAbsolutePath();
+					targetPathField.setText(targetPath);
+				}
+			}
+		});
+		pathField.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				if (new File(targetPathField.getText()).isDirectory()) {
+					targetPath = targetPathField.getText();
+				} else {
+
+					System.out.println("路径名错误");
+				}
+
+			}
+		});
+
+
+		btn4.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				textFileIO.writeTargetPathToText(targetPath);
 			}
 		});
 
@@ -366,6 +423,7 @@ public class MainFrame extends JFrame {
 				String numberlocation;
 
 				String scanGunContent = scanGunField.getText();
+				textFileIO.writeScanGunToText(scanGunContent);
 				int a = textFileIO.readNumRow();
 				int b = textFileIO.readNumColumn();
 				try {
@@ -373,6 +431,7 @@ public class MainFrame extends JFrame {
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
+
 
 
 			}
@@ -448,11 +507,11 @@ public class MainFrame extends JFrame {
 						int c = textFileIO.readResultRow();
 						int d = textFileIO.readResultColumn();
 						path = textFileIO.readPath();
-						System.out.println(c);
-						System.out.println(d);
-						System.out.println(resultContent);
-						System.out.println(path);
+						targetPath=textFileIO.readTargetPath();
+						scanGunContent = textFileIO.readScanGun();
+
 						writeExcel.setExcel(path,c-1,d-1,resultContent);
+						copyExcel.copy2(path,targetPath+"/"+scanGunContent+".xls");
 
 
 						// 以字符串的形式接收数据

@@ -14,7 +14,7 @@ public class writeExcel{
 
 
     public static void setExcel(String pathName,int rowNum,int columnNum,String content) throws IOException {
-        FileInputStream fs=new FileInputStream(pathName);  //获取d://test.xls
+        FileInputStream fs=new FileInputStream(pathName);
         POIFSFileSystem ps=new POIFSFileSystem(fs);  //使用POI提供的方法得到excel的信息
         HSSFWorkbook wb=new HSSFWorkbook(ps);
         HSSFSheet sheet=wb.getSheetAt(0);  //获取到工作表，因为一个excel可能有多个工作表
